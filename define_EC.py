@@ -39,11 +39,18 @@ def define_ec(mod, queue):
 
     print('a=' + str(a) + ' , b=' + str(b) + ' : group order = ' + str(group_order) + ' is prime.')
 
-    # 公開点とする楕円曲線上の点を１つ選ぶ
+    # 公開点とする楕円曲線上の点を１つランダムに選ぶ
     param['point'] = choice(point_list)
 
     # 親に位数が素数になるパラメータを見つけたことを伝える
     queue.put(param)
+
+
+"""
+main.pyのmain()でどちらを選ぶかを決める。
+位数が素数の(a,b)を選ぶ --> define_ec_main(mod)
+位数が素数か判定しない  --> define_ec_easy(mod)
+"""
 
 
 # define_ecをマルチプロセスにした
@@ -90,5 +97,6 @@ def define_ec_easy(mod):
             break
 
     # パラメータの情報をまとめる
+    b %= mod
     parm_dic = {'a': a, 'b': b, 'mod': mod, 'point': (x, y)}
     return parm_dic

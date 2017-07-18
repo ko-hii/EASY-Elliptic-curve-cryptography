@@ -10,22 +10,22 @@ def main():
     # 1. 楕円曲線暗号の法になる素数を決める
     print('---get prime---')
     start = time()
-    mod = get_prime(4)   # 4桁の素数(4桁なら解読までもまぁすぐに終わる)
+    mod = get_prime(6)   # 4桁の素数(4桁なら解読までもまぁすぐに終わる)
     print('prime = ' + str(mod))
     print('get_prime time = ' + str(time() - start) + ' sec')
     print('\n')
 
-    # 2. 楕円曲線の定数を決める (modが4桁の素数なら、define_ec_main()を使ってもまぁすぐ終わる)
-    """
+    # 2. 楕円曲線の定数と公開する点Pを決める (modが4桁の素数なら、define_ec_main()を使ってもまぁすぐ終わる)
+
     param = define_ec_easy(mod)   # 位数が素数かどうかのチェックをしない
 
     """
     # 位数が素数になるまでパラメータの選びなおしを行う
-    from define_EC import define_ec_main
     start = time()
     param = define_ec_main(mod)   # 位数を計算し、それが素数になるまでaとbを選び続ける関数
     print('define elliptic curve parameter time = ' + str(time() - start) + ' sec')
     print('')
+    """
 
     # 3. 楕円曲線暗号を用いてアリスとボブが鍵交換を行う
     print('---key exchange---')
