@@ -1,6 +1,7 @@
 from random import randint
 from sympy import Symbol
 from math import sqrt
+from multiprocessing import Pool
 
 
 # modの法の下でxの逆元を返す(ユークリッド互除法)
@@ -69,7 +70,10 @@ def add_point(point1, point2, param):
 
 
 # pointのn倍を返す(繰り返し2倍法)
-def mul_point(point, n, param):
+def mul_point(dic):
+    n = dic['n']
+    point = dic['point']
+    param = dic['param']
     if n == 1:
         return point
     n_bin = bin(n)[2:]   # nを2進数(の文字列)に
@@ -109,16 +113,17 @@ def key_exchange_main(param):
 
     print('')
 
-    # 3. それぞれの秘密鍵をpublic座標にかける
-    send_data_alice = mul_point(public_point, alice_key, param)  # publicをAliceの秘密鍵倍する
+    # 3. それぞれの秘密鍵をpublic座標にかける(並列化した)
+    p = Pool(2)
+    send_data_alice, send_data_bob = p.map(mul_point, [{'n': alice_key, 'param': param, 'point': param['point']},
+                                                       {'n': bob_key, 'param': param, 'point': param['point']}])
     print("Alice's send point\t: " + str(send_data_alice))
-    send_data_bob = mul_point(public_point, bob_key, param)      # publicをBobの秘密鍵倍する
     print("Bob's send point\t: " + str(send_data_bob))
 
-    # 4. それぞれが復号してみる
-    alice = mul_point(send_data_bob, alice_key, param)     # アリスがボブのデータを復号
+    # 4. それぞれが復号してみる(並列化した)
+    alice, bob = p.map(mul_point, [{'n': alice_key, 'param': param, 'point': send_data_bob},
+                                   {'n': bob_key, 'param': param, 'point': send_data_alice}])
     print('decrypted point in Alice\t: ' + str(alice))
-    bob = mul_point(send_data_alice, bob_key, param)       # ボブがアリスのデータを復号
     print('decrypted point in Bob\t\t: ' + str(bob))
 
     return {'public_point': public_point, 'send_data_alice': send_data_alice, 'send_data_bob': send_data_bob}

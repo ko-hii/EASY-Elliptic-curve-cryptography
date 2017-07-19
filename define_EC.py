@@ -47,7 +47,7 @@ def define_ec(mod, queue):
 
 
 """
-main.pyのmain()でどちらを選ぶかを決める。
+main.pyのmain()の中でどちらを選ぶかを決める。
 位数が素数の(a,b)を選ぶ --> define_ec_main(mod)
 位数が素数か判定しない  --> define_ec_easy(mod)
 """
